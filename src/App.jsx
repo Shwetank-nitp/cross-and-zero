@@ -196,7 +196,6 @@ function App() {
 
   useEffect(() => {
     const skt = io(import.meta.env.VITE_HOST);
-    console.log(import.meta.env.VITE_HOST);
     setSocket(skt);
 
     skt.on("connect", () => {
