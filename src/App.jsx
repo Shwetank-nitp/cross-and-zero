@@ -27,7 +27,7 @@ function Start() {
 function Play() {
   const [gameBoard, setGameBoard] = useState("* * */* * */* * *");
   const { socket, setGame, game, setState } = useStateContext();
-  const [open, setOpen] = useState({ is: false, status: "ongoing" });
+  const [open, setOpen] = useState({ is: false, status: "none" });
 
   useEffect(() => {
     const events = new PlayEvents(socket, setGameBoard, setOpen);
@@ -59,7 +59,9 @@ function Play() {
           <p>
             {open.status === "winner"
               ? "You have won, Click 'Home' to Go to home page"
-              : open.status === "loose" ? "Ooops, You lost, may be better Luck next time, Click Home to try again" : "Ohh, match draw. Try again"}
+              : open.status === "looser"
+              ? "Ooops, You lost, may be better Luck next time, Click Home to try again"
+              : "ohh, you made a draw, try again"}
           </p>
           <button onClick={handleFlow}>Home</button>
         </div>

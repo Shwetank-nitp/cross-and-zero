@@ -145,11 +145,11 @@ export class PlayEvents {
 
   // Method to clean up event listeners
   removeListeners() {
-    this.socket.off("fairPlayError", this.fairPlayError);
-    this.socket.off("winner", this.winner);
-    this.socket.off("looser", this.loser);
-    this.socket.off("getBoard", this.getBoard);
-    this.socket.off("draw", this.drawGame);
+    this.socket.off("fairPlayError");
+    this.socket.off("winner");
+    this.socket.off("looser");
+    this.socket.off("getBoard");
+    this.socket.off("draw");
   }
 
   // Register all event listeners
