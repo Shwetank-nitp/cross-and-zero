@@ -42,6 +42,10 @@
   padding: 1rem;
   background: #000;
   border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 @media only screen and (max-width: 600px) {
