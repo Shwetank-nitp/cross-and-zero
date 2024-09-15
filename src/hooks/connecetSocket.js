@@ -84,8 +84,8 @@ export class AppEvents {
 export class PlayEvents {
   constructor(socket, setGameBoard, setOpen) {
     this.socket = socket;
-    this.setGameBoard = setGameBoard; // Function to update the game board state
-    this.setOpen = setOpen; // Function to control the modal or state for win/lose/draw
+    this.setGameBoard = setGameBoard;
+    this.setOpen = setOpen;
   }
 
   // Method to handle Fair Play Error event
@@ -103,7 +103,7 @@ export class PlayEvents {
   winner() {
     this.socket.on("winner", (message) => {
       console.log("You won!", message);
-      this.setOpen({ is: true, winner: true });
+      this.setOpen({ is: true, status: "winner" });
       toast.success("Congratulations! You won!", {
         position: "top-center",
         autoClose: 3000,
@@ -115,7 +115,7 @@ export class PlayEvents {
   loser() {
     this.socket.on("looser", (message) => {
       console.log("You lost", message);
-      this.setOpen({ is: true, winner: false });
+      this.setOpen({ is: true, status: "loose" });
       toast.error("You lost! Better luck next time.", {
         position: "top-center",
         autoClose: 3000,
@@ -135,7 +135,7 @@ export class PlayEvents {
   drawGame() {
     this.socket.on("draw", (message) => {
       console.log("Game Draw", message);
-      this.setOpen({ is: true, winner: false });
+      this.setOpen({ is: true, status: "draw" });
       toast.info("Match draw! Better luck next time.", {
         position: "top-center",
         autoClose: 3000,
@@ -145,11 +145,11 @@ export class PlayEvents {
 
   // Method to clean up event listeners
   removeListeners() {
-    this.socket.off("fairPlayError");
-    this.socket.off("winner");
-    this.socket.off("looser");
-    this.socket.off("getBoard");
-    this.socket.off("draw");
+    this.socket.off("fairPlayError", this.fairPlayError);
+    this.socket.off("winner", this.winner);
+    this.socket.off("looser", this.loser);
+    this.socket.off("getBoard", this.getBoard);
+    this.socket.off("draw", this.drawGame);
   }
 
   // Register all event listeners
