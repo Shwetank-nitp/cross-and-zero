@@ -1,16 +1,12 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { io } from "socket.io-client";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import cross from "./assets/2.svg";
 import zero from "./assets/1.svg";
-
-const stateContext = createContext();
-
-function useStateContext() {
-  return useContext(stateContext);
-}
+import { stateContext, useStateContext } from "./hooks/state-provider";
+import { AppEvents, PlayEvents } from "./hooks/connecetSocket";
 
 function Start() {
   const { socket, setState, isConnected } = useStateContext();
@@ -18,7 +14,6 @@ function Start() {
     socket.emit("startNewGame");
     setState(1);
   };
-  console.log(isConnected);
   return (
     <div className="container">
       <h3>Welcome to game! Click Start to play</h3>
@@ -35,70 +30,14 @@ function Play() {
   const [open, setOpen] = useState({ is: false, winner: false });
 
   useEffect(() => {
-    // Fair Play Error
-    const handleFairPlayError = (message) => {
-      console.log("Fair Play Error", message);
-      toast.warn(message, {
-        position: "top-center",
-        autoClose: 3000,
-      });
-    };
-
-    // Winner
-    const handleWinner = (message) => {
-      console.log("You won!", message);
-      setOpen({ is: true, winner: true });
-      toast.success("Congratulations! You won!", {
-        position: "top-center",
-        autoClose: 3000,
-      });
-    };
-
-    // Loser
-    const handleLoser = (message) => {
-      console.log("You lost", message);
-      setOpen({ is: true, winner: false });
-      toast.error("You lost! Better luck next time.", {
-        position: "top-center",
-        autoClose: 3000,
-      });
-    };
-
-    // Get board
-    const handleGetBoard = (str) => {
-      console.log("getBoard: ", str);
-      setGameBoard(str);
-    };
-
-    //Draw Game
-    const handleDrawGame = (message) => {
-      console.log("Game Draw", message);
-      setOpen({ is: true, winner: false });
-      toast.info("Match draw! Better luck next time.", {
-        position: "top-center",
-        autoClose: 3000,
-      });
-    };
-
-    // Register event listeners
-    socket.on("fairPlayError", handleFairPlayError);
-    socket.on("winner", handleWinner);
-    socket.on("looser", handleLoser);
-    socket.on("getBoard", handleGetBoard);
-    socket.on("draw", handleDrawGame);
-
-    // Clean up event listeners when the component unmounts
+    const events = new PlayEvents(socket, setGameBoard, setOpen);
+    events.registerListeners();
     return () => {
-      socket.off("fairPlayError", handleFairPlayError);
-      socket.off("winner", handleWinner);
-      socket.off("looser", handleLoser);
-      socket.off("getBoard", handleGetBoard);
-      socket.off("draw", handleDrawGame);
+      events.removeListeners();
     };
   }, []);
 
   function handleClick(e) {
-    console.log("make move :", e.target.name);
     socket.emit("makeMove", e.target.name);
   }
 
@@ -198,59 +137,10 @@ function App() {
     const skt = io(import.meta.env.VITE_HOST);
     setSocket(skt);
 
-    skt.on("connect", () => {
-      toast.success("Connected to server", {
-        position: "top-center",
-        autoClose: 3000,
-      });
-      setIsConnected(true);
-    });
+    const events = new AppEvents(skt, setIsConnected, setGame);
 
-    skt.on("disconnect", () => {
-      toast.error("Disconnected from server", {
-        position: "top-center",
-        autoClose: 3000,
-      });
-      setIsConnected(false);
-    });
-
-    skt.on("waiting", (value) => {
-      toast.info("Waiting for opponent", {
-        position: "top-center",
-        autoClose: 3000,
-      });
-    });
-
-    skt.on("GameStarted", (value) => {
-      setGame(value);
-      toast.success("Game started! Let's play!", {
-        position: "top-center",
-        autoClose: 3000,
-      });
-    });
-
-    skt.on("error", (error) => {
-      toast.error(error, {
-        position: "top-center",
-        autoClose: 3000,
-      });
-    });
-
-    skt.on("quit", (message) => {
-      setGame(null);
-      toast.info(message, {
-        position: "top-center",
-        autoClose: 3000,
-      });
-    });
-
-    skt.on("gameAborted", () => {
-      setGame(null);
-      toast.warn("Game Aborted!", {
-        position: "top-center",
-        autoClose: 3000,
-      });
-    });
+    //AppEvents
+    events.addListners();
 
     return () => {
       if (skt) skt.disconnect();
