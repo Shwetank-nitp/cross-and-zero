@@ -115,7 +115,7 @@ export class PlayEvents {
   loser() {
     this.socket.on("looser", (message) => {
       console.log("You lost", message);
-      this.setOpen({ is: true, status: "loose" });
+      this.setOpen({ is: true, status: "looser" });
       toast.error("You lost! Better luck next time.", {
         position: "top-center",
         autoClose: 3000,

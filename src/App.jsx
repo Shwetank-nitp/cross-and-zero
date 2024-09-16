@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
-import "./App.css";
 import { io } from "socket.io-client";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import cross from "./assets/2.svg";
 import zero from "./assets/1.svg";
 import { stateContext, useStateContext } from "./hooks/state-provider";
 import { AppEvents, PlayEvents } from "./hooks/connecetSocket";
+import { Loading } from "./components/ui/loading";
+import {
+  AnimatedButton,
+  DangerButton,
+  PrimaryButton,
+} from "./components/ui/button";
+import { ContainerGlass } from "./components/ui/container";
+import waiting from "./assets/waiting.gif";
 
 function Start() {
   const { socket, setState, isConnected } = useStateContext();
@@ -15,12 +22,16 @@ function Start() {
     setState(1);
   };
   return (
-    <div className="container">
-      <h3>Welcome to game! Click Start to play</h3>
-      <button disabled={!isConnected} onClick={handleFlow}>
-        Start Game
-      </button>
-    </div>
+    <ContainerGlass>
+      {isConnected ? (
+        <>
+          <h3 className="text-2xl">Welcome to game! Click Start to play</h3>
+          <AnimatedButton onClick={handleFlow}>Start Game</AnimatedButton>
+        </>
+      ) : (
+        <Loading />
+      )}
+    </ContainerGlass>
   );
 }
 
@@ -38,6 +49,7 @@ function Play() {
   }, []);
 
   function handleClick(e) {
+    console.log("makeMOde", e.target.name);
     socket.emit("makeMove", e.target.name);
   }
 
@@ -53,18 +65,30 @@ function Play() {
   }
 
   return (
-    <div className="container relative">
+    <div className="relative flex flex-col place-items-center w-full gap-2">
       {open.is && (
-        <div className="pop-up">
-          <p>
-            {open.status === "winner"
-              ? "You have won, Click 'Home' to Go to home page"
-              : open.status === "looser"
-              ? "Ooops, You lost, may be better Luck next time, Click Home to try again"
-              : "ohh, you made a draw, try again"}
-          </p>
-          <button onClick={handleFlow}>Home</button>
-        </div>
+        <ContainerGlass className={"absolute top-[38%] z-10 opacity-100"}>
+          <div>
+            {open.status === "winner" ? (
+              <p className="text-blue-900">
+                {"You have won, Click 'Home' to Go to home page"}
+              </p>
+            ) : open.status === "looser" ? (
+              <p className="text-red-900">
+                {
+                  "Ooops, You lost, may be better Luck next time, Click Home to try again"
+                }
+              </p>
+            ) : (
+              <p className="text-yellow-900">
+                {"ohh, you made a draw, try again"}
+              </p>
+            )}
+          </div>
+          <PrimaryButton className={"text-white"} onClick={handleFlow}>
+            Home
+          </PrimaryButton>
+        </ContainerGlass>
       )}
       <div className="player-info">
         <div>
@@ -73,24 +97,28 @@ function Play() {
         </div>
         <span>{`you : ${game?.your_mark}`}</span>
       </div>
-      <div className="play-grid-box">
-        {gameBoard.split("/").map((str, row) => {
-          return str.split(" ").map((val, col) => (
-            <button
-              key={`${row + " " + col}`}
-              onClick={handleClick}
-              className="grid-item"
-              name={`${row + " " + col}`}
-            >
-              {val === "*" ? (
-                ""
-              ) : (
-                <img src={val === "x" ? cross : zero} alt={val}></img>
-              )}
-            </button>
-          ));
-        })}
-      </div>
+      <ContainerGlass>
+        <div className="grid grid-cols-3 grid-rows-3 w-full h-[95vw] sm:h-[420px]">
+          {gameBoard.split("/").map((str, row) => {
+            return str.split(" ").map((val, col) => (
+              <button
+                className={`w-full h-full p-1 ${
+                  (row * 3 + col) % 2 === 0 ? "bg-purple-700" : "bg-slate-300"
+                }`}
+                key={`${row + " " + col}`}
+                onClick={handleClick}
+                name={`${row + " " + col}`}
+              >
+                {val === "*" ? (
+                  ""
+                ) : (
+                  <img src={val === "x" ? cross : zero} alt={val}></img>
+                )}
+              </button>
+            ));
+          })}
+        </div>
+      </ContainerGlass>
       <div className="player-info">
         <div>
           <span>Opponent Id: </span>
@@ -98,7 +126,7 @@ function Play() {
         </div>
         <span>{`opponent : ${game?.opp_mark}`}</span>
       </div>
-      <button onClick={handleQuit}>Quit</button>
+      <DangerButton onClick={handleQuit}>Quit</DangerButton>
     </div>
   );
 }
@@ -110,7 +138,14 @@ function Waiting() {
       setState(2);
     }
   }, [game]);
-  return <h1>Loading...</h1>;
+  return (
+    <ContainerGlass>
+      <div>
+        <img src={waiting} alt="waiting" />
+        <p className="my-3 text-xl">Waiting for Someone to play with you</p>
+      </div>
+    </ContainerGlass>
+  );
 }
 
 function GameFlow() {

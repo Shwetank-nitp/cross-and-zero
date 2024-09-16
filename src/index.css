@@ -1,69 +1,230 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /*========== Colors ==========*/
+  /*Color mode HSL(hue, saturation, lightness)*/
+  --gradient-color: linear-gradient(
+    90deg,
+    hsl(203, 100%, 50%) 0%,
+    hsl(278, 100%, 54%)
+  );
+  --black-color: hsl(225, 15%, 6%);
+  --reflection-color: hsla(48, 30%, 95%, 0.3);
+  --body-color: hsl(48, 100%, 98%);
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /*========== Font and typography ==========*/
+  /*.5rem = 8px | 1rem = 16px ...*/
+  --body-font: monospace;
+  --normal-font-size: 1rem;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+#root {
+  width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+  background-image: url("./assets/b-1.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--body-font);
+  font-weight: 900;
+  font-size: 1rem;
 }
 
-body {
+/*=============== BUTTON ===============*/
+.container {
+  padding: 2.5rem 0;
+  display: grid;
+  place-items: center;
+}
+
+.button {
+  position: relative;
+  transition: transform 0.4s;
+}
+
+.button__content {
+  position: relative;
+  background: var(--gradient-color);
+  padding: 1.25rem 3rem;
+  border-radius: 4rem;
+  border: 3px solid var(--black-color);
+  color: var(--black-color);
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
   overflow: hidden;
 }
 
-* {
-  margin: 0;
-  padding: 0;
+.button__text {
+  font-weight: 700;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.button__icon {
+  font-size: 1.5rem;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.button__text,
+.button__icon {
+  position: relative;
+  z-index: 2;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Reflection shapes */
+.button__reflection-1,
+.button__reflection-2 {
+  width: 8px;
+  height: 120px;
+  background-color: var(--reflection-color);
+  rotate: 30deg;
+  position: absolute;
+  inset: 0;
+  top: 0;
+  left: -180%;
+  margin: auto;
+  transition: left 0.6s cubic-bezier(0.2, 0.5, 0.2, 1.2);
+}
+
+.button__reflection-1::after {
+  content: "";
+  width: 26px;
+  height: 100%;
+  background-color: var(--reflection-color);
+  position: absolute;
+  top: -1rem;
+  left: 1.25rem;
+}
+
+.button__reflection-2::after {
+  content: "";
+  width: 40px;
+  height: 100%;
+  background-color: var(--reflection-color);
+  position: absolute;
+  top: -1rem;
+  left: 0.8rem;
+}
+
+/* Moving geometric shapes */
+.button img {
+  position: absolute;
+  opacity: 0;
+  transition: transform 0.5s, opacity 0.5s;
+}
+
+.button__star-1 {
+  width: 20px;
+  top: -14px;
+  left: -16px;
+  transform: rotate(48deg) scale(0.1);
+}
+
+.button__star-2 {
+  width: 40px;
+  right: -10px;
+  top: -4px;
+  transform: rotate(-48deg) scale(0.1);
+}
+
+.button__circle-1,
+.button__circle-2 {
+  width: 8px;
+}
+
+.button__circle-1 {
+  top: -8px;
+  left: 58px;
+  transform: scale(0.1);
+}
+
+.button__circle-2 {
+  right: 34px;
+  bottom: -8px;
+  transform: scale(0.1);
+}
+
+.button__diamond {
+  width: 18px;
+  top: -18px;
+  right: 62px;
+  transform: scale(0.1);
+}
+
+.button__triangle {
+  width: 30px;
+  left: 15px;
+  bottom: -16px;
+  transform: rotate(-48deg) scale(0.1);
+}
+
+/* Gradient shadow */
+.button__shadow {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: var(--gradient-color);
+  padding: 1.25rem 3rem;
+  border-radius: 4rem;
+  border: 3px solid var(--black-color);
+  z-index: -1;
+  transition: transform 0.3s;
+}
+
+/* View shadow gradient */
+.button:hover .button__shadow {
+  transform: translate(-0.5rem, 0.5rem);
+}
+
+/* Move reflection */
+.button:hover .button__reflection-1 {
+  left: 120%;
+}
+
+.button:hover .button__reflection-2 {
+  left: -70%;
+}
+
+/* View geometric shapes */
+.button:hover {
+  transform: rotate(-4deg) scale(1.1);
+}
+
+.button:hover img {
+  opacity: 1;
+}
+
+.button:hover .button__star-1 {
+  transform: scale(1.1);
+  transition-delay: 0.1s;
+}
+
+.button:hover .button__star-2 {
+  transform: scale(1.1);
+}
+
+.button:hover .button__circle-1 {
+  transform: translateY(-8px) scale(1.1);
+  transition-delay: 0.1s;
+}
+
+.button:hover .button__circle-2 {
+  transform: translate(-20px, 20px) scale(1.1);
+}
+
+.button:hover .button__diamond {
+  transform: translateY(7px) rotate(-24deg) scale(1.1);
+}
+
+.button:hover .button__triangle {
+  transform: rotate(-12deg) scale(1.1);
 }
