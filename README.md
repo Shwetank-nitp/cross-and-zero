@@ -60,7 +60,7 @@ npm install
 In the frontend directory, rename the `.env.sample` file to `.env` to configure your environment variables:
 
 ```bash
-cd ../cross-and-zero
+cd cross-and-zero
 ```
 
 `rename .env.sample to .env`
