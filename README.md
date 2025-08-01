@@ -4,7 +4,6 @@
 
 This React project aims to create a **real-time multiplayer game** with an **interactive UI**, offering a lightweight and engaging entry point into the world of **live communication platforms**. The goal is to provide a clean, responsive interface that demonstrates how seamless real-time interaction can enhance even the simplest of games—like classic Tic-Tac-Toe.
 
-
 ## 🌐 Live Demo
 
 Check out the live game at [Live link](https://cross-and-zero.vercel.app/)
@@ -28,6 +27,47 @@ This project is built using:
 👉 [🔗 Backend Repository](https://github.com/Shwetank-nitp/backend-game-x0)
 
 ---
+
+## 🚀 Getting Started
+
+Follow these steps to set up both the frontend and backend of the application.
+
+### 1. Clone the Repositories
+
+Open your terminal and run the following commands to clone the frontend and backend repositories:
+
+```bash
+git clone https://github.com/Shwetank-nitp/cross-and-zero.git
+git clone https://github.com/Shwetank-nitp/backend-game-x0.git
+```
+
+### 2. Install Dependencies
+
+Navigate into each project directory and install the necessary dependencies using npm:
+
+```bash
+# For the frontend
+cd cross-and-zero
+npm install
+
+# For the backend
+cd backend-game-x0
+npm install
+```
+
+### 3. Configure Environment Variables (Frontend only)
+
+In the frontend directory, rename the `.env.sample` file to `.env` to configure your environment variables:
+
+```bash
+cd ../cross-and-zero
+```
+
+`rename .env.sample to .env`
+
+---
+
+Once setup is complete, you can run both the frontend and backend servers as per the project instructions.
 
 ## 🧠 How It Works
 
@@ -54,6 +94,7 @@ The game board is internally represented as a single string: `***/***/***`
 - The backend **validates** the move (e.g., correct turn, unoccupied cell).
 - Once validated, the move is **broadcasted** to the opponent.
 - The frontend listens for updates via **Socket.io events** to reflect the new board state in real time.
+
 ---
 
 ## 🚀 What I Learned
