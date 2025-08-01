@@ -4,6 +4,11 @@
 
 This React project aims to create a **real-time multiplayer game** with an **interactive UI**, offering a lightweight and engaging entry point into the world of **live communication platforms**. The goal is to provide a clean, responsive interface that demonstrates how seamless real-time interaction can enhance even the simplest of games—like classic Tic-Tac-Toe.
 
+
+## 🌐 Live Demo
+
+Check out the live game at [Live link](https://cross-and-zero.vercel.app/)
+
 ---
 
 ## 📖 Project Description
